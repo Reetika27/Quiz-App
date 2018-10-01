@@ -3,6 +3,10 @@ package com.example.shanay.quizapp2;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
+import android.os.CountDownTimer;
+import android.os.PersistableBundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,10 +18,19 @@ import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class QuizActivity extends AppCompatActivity {
 
-    //public static final String EXTRA_SCORE = "newScore";
+    public static final String EXTRA_SCORE = "newScore";
+    private static final long COUNTDOWN_IN_MILLIS =30000;
+
+    private static final String KEY_SCORE = "keyScore";
+    private static final String KEY_QUESTION_COUNT = "keyQuestionCount";
+    private static final String KEY_COUNTDOWN = "keyCountDown";
+    private static final String KEY_MILLIS_LEFT = "keyMillisleft";
+    private static final String KEY_ANSWERED = "keyAnswered";
+    private static final String KEY_QUESTION_LIST ="keyQuestionsList";
 
     private TextView textViewQuestion;
     private  TextView textViewScore;
@@ -31,6 +44,10 @@ public class QuizActivity extends AppCompatActivity {
     private Button buttonSubmitNext;
 
     private ColorStateList textColorDefaultrb;
+    private ColorStateList textColorDefaultCd;
+
+    private CountDownTimer countDownTimer;
+    private long timeLeft;
 
     private List<Questions> questionsList;
 
@@ -39,6 +56,8 @@ public class QuizActivity extends AppCompatActivity {
     private Questions currentQuestion;
     private int score;
     private boolean answered;
+
+    private long backPressedTime;
 
     private QuizDBHelper quizDBHelper;
 
@@ -59,6 +78,7 @@ public class QuizActivity extends AppCompatActivity {
         buttonSubmitNext = findViewById(R.id.btn_submit_next);
 
         textColorDefaultrb = rb1.getTextColors();
+        textColorDefaultCd = textViewCountDown.getTextColors();
 
         this.quizDBHelper = new QuizDBHelper(this);
         questionsList = quizDBHelper.getAllQuestions();
@@ -93,6 +113,11 @@ public class QuizActivity extends AppCompatActivity {
     protected void onDestroy() {
         this.quizDBHelper.close();
         super.onDestroy();
+
+        if(countDownTimer!=null)
+        {
+            countDownTimer.cancel();
+        }
     }
 
     private void showNextQuestion()
@@ -118,7 +143,9 @@ public class QuizActivity extends AppCompatActivity {
             answered =false;
             buttonSubmitNext.setText("Confirm");
 
-        }
+            timeLeft = COUNTDOWN_IN_MILLIS;
+            startCountDown();
+                            }
         else {
             finishQuiz();
         }
@@ -127,6 +154,8 @@ public class QuizActivity extends AppCompatActivity {
     private void checkAnswer()
     {
         answered =true;
+        countDownTimer.cancel();
+
         RadioButton rbSelected = findViewById(rGroup.getCheckedRadioButtonId());
         int ansNo = rGroup.indexOfChild(rbSelected) + 1;
 
@@ -139,6 +168,43 @@ public class QuizActivity extends AppCompatActivity {
         showSolution();
 
     }
+
+private void startCountDown()
+{
+    countDownTimer =  new CountDownTimer(timeLeft,1000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+            timeLeft = millisUntilFinished;
+            updateCountDownText();
+        }
+
+        @Override
+        public void onFinish() {
+            timeLeft =0;
+            updateCountDownText();
+            checkAnswer();
+        }
+    }.start();
+}
+
+private void updateCountDownText()
+{
+    int mins =(int)(timeLeft/1000)/60;
+    int secs = (int) (timeLeft/1000)%60;
+
+    String timeFormatted = String.format(Locale.getDefault(),"%02d:%02d",mins,secs);
+
+    textViewCountDown.setText(timeFormatted);
+    if(timeLeft < 10000)
+    {
+        textViewCountDown.setTextColor(Color.RED);
+    }
+    else
+    {
+        textViewCountDown.setTextColor(textColorDefaultCd);
+    }
+}
 
 
     private void showSolution()
@@ -178,9 +244,36 @@ public class QuizActivity extends AppCompatActivity {
 }
     private void finishQuiz()
     {
-        /*Intent resultIntent = new Intent();
+        Intent resultIntent = new Intent();
         resultIntent.putExtra(EXTRA_SCORE,score);
-        setResult(RESULT_OK,resultIntent);*/
+        setResult(RESULT_OK,resultIntent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(backPressedTime+2000 > System.currentTimeMillis())
+        {
+            finishQuiz();
+        }
+        else
+        {
+            Toast.makeText(this,"Press back again to finish",Toast.LENGTH_SHORT).show();
+        }
+        backPressedTime = System.currentTimeMillis();
+
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_SCORE,score);
+        outState.putInt(KEY_QUESTION_COUNT,questionCounter);
+        outState.putLong(KEY_MILLIS_LEFT,timeLeft);
+        outState.putBoolean(KEY_ANSWERED,answered);
+        outState.putParcelableArrayList(KEY_QUESTION_LIST,questionsList);
+
+
     }
 }

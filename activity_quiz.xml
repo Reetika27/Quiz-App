@@ -15,6 +15,7 @@ tools:context=".QuizActivity">
     android:textSize="20dp"
     android:textColor="@android:color/black"
     android:layout_marginTop="16dp"
+    android:freezesText="true"
     />
 
 <TextView
@@ -25,7 +26,8 @@ tools:context=".QuizActivity">
     android:layout_below="@id/text_score"
     android:textColor="@android:color/black"
     android:textSize="20dp"
-    android:layout_marginTop="10dp"/>
+    android:layout_marginTop="10dp"
+    android:freezesText="true"/>
 
 
 
@@ -37,7 +39,8 @@ tools:context=".QuizActivity">
     android:textSize="40sp"
     android:text="00:30"
     android:layout_alignParentEnd="true"
-    android:layout_marginRight="10dp"/>
+    android:layout_marginRight="10dp"
+    android:freezesText="true"/>
 
 <TextView
     android:id="@+id/text_question_statement"
@@ -49,6 +52,7 @@ tools:context=".QuizActivity">
     android:textColor="@android:color/black"
     android:textSize="20sp"
     android:textAlignment="center"
+    android:freezesText="true"
     />
 
 <RadioGroup
@@ -64,7 +68,8 @@ tools:context=".QuizActivity">
         android:layout_height="wrap_content"
         android:text="Option1"
         android:textColor="@android:color/black"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:freezesText="true"/>
 
     <RadioButton
         android:id="@+id/radio_btn2"
@@ -72,7 +77,8 @@ tools:context=".QuizActivity">
         android:layout_height="wrap_content"
         android:text="Option2"
         android:textColor="@android:color/black"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:freezesText="true"/>
 
     <RadioButton
         android:id="@+id/radio_btn3"
@@ -80,7 +86,9 @@ tools:context=".QuizActivity">
         android:layout_height="wrap_content"
         android:text="Option3"
         android:textColor="@android:color/black"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:freezesText="true"
+        />
 
     <RadioButton
         android:id="@+id/radio_btn4"
@@ -88,7 +96,8 @@ tools:context=".QuizActivity">
         android:layout_height="wrap_content"
         android:text="Option4"
         android:textColor="@android:color/black"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:freezesText="true"/>
 
 
 </RadioGroup>
@@ -101,5 +110,7 @@ tools:context=".QuizActivity">
     android:layout_centerHorizontal="true"
     android:layout_marginBottom="90dp"
     android:text="Submit"
-    android:textColor="@android:color/black" />
+    android:textColor="@android:color/black"
+    android:freezesText="true"/>
+
 </RelativeLayout>
