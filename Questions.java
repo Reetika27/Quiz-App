@@ -5,7 +5,7 @@ public class Questions  {
     public static  final String DIFFICULTY_MEDIUM = "Medium";
     public static  final String DIFFICULTY_HARD = "Hard";
 
-   // private int id;
+    private int id;
     private String question;
     private String option1;
     private String option2;
@@ -13,13 +13,13 @@ public class Questions  {
     private String option4;
     private int ansNr;
     private String difficulty;
-    //private int category_id;
+    private int category_id;
 
     public Questions()
     {}
 
     public Questions(String question, String option1, String option2, String option3, String option4,
-                     int ansNr,String difficulty)
+                     int ansNr,String difficulty,int category_id)
     {
         this.question = question;
         this.option1 = option1;
@@ -28,17 +28,17 @@ public class Questions  {
         this.option4 = option4;
         this.ansNr = ansNr;
         this.difficulty = difficulty;
-        //this.category_id = category_id;
+        this.category_id = category_id;
     }
 
-   /* public int getId() {
+    public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
     }
-*/
+
     public String getQuestion() {
         return question;
     }
@@ -95,13 +95,13 @@ public class Questions  {
         this.difficulty = difficulty;
     }
 
-   /* public int getCategory_id() {
+    public int getCategory_id() {
         return category_id;
     }
 
     public void setCategory_id(int category_id) {
         this.category_id = category_id;
-    }*/
+    }
 
     public static String[] getAllDifficultyLevels()
     {
