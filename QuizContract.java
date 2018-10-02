@@ -23,7 +23,7 @@ public final class QuizContract {
         public static final String COLUMN_OPTION4 = "option4";
         public static final String COLUMN_ANS = "ansNo";
         public static final String COLUMN_DIFFICULTY ="difficultyLevel";
-        public static final String COLUMN_CATEGORY_ID ="categoryID";
+        //public static final String COLUMN_CATEGORY_ID ="categoryID";
 
 
 
