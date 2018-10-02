@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -27,7 +28,6 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final String KEY_SCORE = "keyScore";
     private static final String KEY_QUESTION_COUNT = "keyQuestionCount";
-    private static final String KEY_COUNTDOWN = "keyCountDown";
     private static final String KEY_MILLIS_LEFT = "keyMillisleft";
     private static final String KEY_ANSWERED = "keyAnswered";
     private static final String KEY_QUESTION_LIST ="keyQuestionsList";
@@ -35,6 +35,7 @@ public class QuizActivity extends AppCompatActivity {
     private TextView textViewQuestion;
     private  TextView textViewScore;
     private TextView textViewQuestionNumber;
+    private  TextView textViewDifficulty;
     private TextView textViewCountDown;
     private RadioGroup rGroup;
     private RadioButton rb1;
@@ -61,6 +62,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private QuizDBHelper quizDBHelper;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +70,7 @@ public class QuizActivity extends AppCompatActivity {
 
         textViewQuestion = findViewById(R.id.text_question_statement);
         textViewQuestionNumber = findViewById(R.id.text_question);
+        textViewDifficulty = findViewById(R.id.text_difficulty);
         textViewScore = findViewById(R.id.text_score);
         textViewCountDown = findViewById(R.id.text_countdown);
         rGroup = findViewById(R.id.radio_group);
@@ -80,13 +83,17 @@ public class QuizActivity extends AppCompatActivity {
         textColorDefaultrb = rb1.getTextColors();
         textColorDefaultCd = textViewCountDown.getTextColors();
 
-        this.quizDBHelper = new QuizDBHelper(this);
-        questionsList = quizDBHelper.getAllQuestions();
+        Intent intent = getIntent();
+        String difficulty = intent.getStringExtra(StartingScreenActivity.EXTRA_DIFFICULTY);
+        textViewDifficulty.setText("Difficulty: "+ difficulty);
 
+        this.quizDBHelper = new QuizDBHelper(this);
+        questionsList = quizDBHelper.getQuestions(difficulty);
         questionTotal = questionsList.size();
         Collections.shuffle(questionsList);
-
         showNextQuestion();
+
+
         buttonSubmitNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -265,15 +272,5 @@ private void updateCountDownText()
     }
 
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_SCORE,score);
-        outState.putInt(KEY_QUESTION_COUNT,questionCounter);
-        outState.putLong(KEY_MILLIS_LEFT,timeLeft);
-        outState.putBoolean(KEY_ANSWERED,answered);
-        outState.putParcelableArrayList(KEY_QUESTION_LIST,questionsList);
 
-
-    }
 }

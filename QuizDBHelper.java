@@ -14,7 +14,7 @@ import java.util.List;
 public class QuizDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME ="Quiz2.db";
-    private static final int DATABASE_VERSION =1;
+    private static final int DATABASE_VERSION =2;
 
     private SQLiteDatabase db;
 
@@ -26,6 +26,12 @@ public class QuizDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
 
+       /* final String SQL_CREATE_CATEGORIES_TABLE = "CREATE TABLE "+
+                QuizContract.CategoriesTable.TABLE_NAME + " ( " +
+                QuizContract.CategoriesTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                QuizContract.CategoriesTable.NAME + " TEXT " +
+                " )";
+*/
         final String SQL_CREATE_QUESTION_TABLE = "CREATE TABLE " +
                 QuizContract.QuestionTable.TABLE_NAME + " ( "+
                 QuizContract.QuestionTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+
@@ -34,9 +40,14 @@ public class QuizDBHelper extends SQLiteOpenHelper {
                 QuizContract.QuestionTable.COLUMN_OPTION2 + " TEXT, "  +
                 QuizContract.QuestionTable.COLUMN_OPTION3 + " TEXT, "  +
                 QuizContract.QuestionTable.COLUMN_OPTION4 + " TEXT,"  +
-                QuizContract.QuestionTable.COLUMN_ANS + " INTEGER"  +
+                QuizContract.QuestionTable.COLUMN_ANS + " INTEGER, "  +
+                QuizContract.QuestionTable.COLUMN_DIFFICULTY+ " TEXT " +
+                /*QuizContract.QuestionTable.COLUMN_CATEGORY_ID+ " INTEGER, " +
+                "FOREIGN KEY(" + QuizContract.QuestionTable.COLUMN_CATEGORY_ID  + ") REFERENCES " +
+                QuizContract.CategoriesTable.TABLE_NAME + "(" + QuizContract.CategoriesTable._ID + ")" + "ON DELETE CASCADE" +*/
                 " )";
 
+        //db.execSQL(SQL_CREATE_CATEGORIES_TABLE);
         db.execSQL(SQL_CREATE_QUESTION_TABLE);
 
         fillQuestionsTable();
@@ -52,13 +63,13 @@ public class QuizDBHelper extends SQLiteOpenHelper {
 
     public void fillQuestionsTable()
     {
-        Questions q1= new Questions("Which is not an access specifier" , "public","private","protected","main",4);
+        Questions q1= new Questions("Eay:Which is not an access specifier" , "public","private","protected","main",4,Questions.DIFFICULTY_EASY);
         addQuestion(q1);
-        Questions q2= new Questions("Inline functions are useful when" , "Function is large with many nested loops","Function has many static variables","Function is small and we want to avoid function call overhead","None of the above",3);
+        Questions q2= new Questions("Easy: Inline functions are useful when" , "Function is large with many nested loops","Function has many static variables","Function is small and we want to avoid function call overhead","None of the above",3,Questions.DIFFICULTY_EASY);
         addQuestion(q2);
-        Questions q3= new Questions("Which of the following is true?" , "All objects of a class share all data members of class","Objects of a class do not share non-static members. Every object has its own copy.","Objects of a class do not share codes of non-static methods, they have their own copy","None Of the above",2);
+        Questions q3= new Questions("Medium: Which of the following is true?" , "All objects of a class share all data members of class","Objects of a class do not share non-static members. Every object has its own copy.","Objects of a class do not share codes of non-static methods, they have their own copy","None Of the above",2,Questions.DIFFICULTY_MEDIUM);
         addQuestion(q3);
-        Questions q4= new Questions("#include<iostream>\n" +
+        Questions q4= new Questions("Hard: #include<iostream>\n" +
                 "using namespace std;\n" +
                 " \n" +
                 "class Test\n" +
@@ -73,9 +84,9 @@ public class QuizDBHelper extends SQLiteOpenHelper {
                 "    Test t;\n" +
                 "    cout << sizeof(t) << \" \";\n" +
                 "    cout << sizeof(Test *);\n" +
-                "}\n" , "12 4","12 12","8 4","8 8",3);
+                "}\n" , "12 4","12 12","8 4","8 8",3,Questions.DIFFICULTY_HARD);
         addQuestion(q4);
-        Questions q5= new Questions("#include<iostream>\n" +
+        Questions q5= new Questions("Hard: #include<iostream>\n" +
                 "using namespace std;\n" +
                 " \n" +
                 "class Base\n" +
@@ -89,7 +100,7 @@ public class QuizDBHelper extends SQLiteOpenHelper {
                 "    Base b;\n" +
                 "    Base *bp;\n" +
                 "    return 0;\n" +
-                "}" , "There are compiler errors in lines \"Base b;\" and \"Base bp;\"","There is compiler error in line \"Base b;","There is compiler error in line \"Base bp;\"","No compiler Error",2);
+                "}" , "There are compiler errors in lines \"Base b;\" and \"Base bp;\"","There is compiler error in line \"Base b;","There is compiler error in line \"Base bp;\"","No compiler Error",2,Questions.DIFFICULTY_HARD);
         addQuestion(q5);
 
     }
@@ -103,9 +114,41 @@ public class QuizDBHelper extends SQLiteOpenHelper {
         values.put(QuizContract.QuestionTable.COLUMN_OPTION3, question.getOption3());
         values.put(QuizContract.QuestionTable.COLUMN_OPTION4, question.getOption4());
         values.put(QuizContract.QuestionTable.COLUMN_ANS, question.getAnsNr());
+        values.put(QuizContract.QuestionTable.COLUMN_DIFFICULTY, question.getDifficulty());
 
         db.insert(QuizContract.QuestionTable.TABLE_NAME,null,values);
 
+    }
+
+       public List<Questions> getQuestions(String difficulty )
+    {
+        List<Questions> questionsList =new ArrayList<Questions>();
+        String[] selectionArgs = new String[] {difficulty};
+
+        db =getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM "+ QuizContract.QuestionTable.TABLE_NAME +
+                " WHERE "+ QuizContract.QuestionTable.COLUMN_DIFFICULTY + " = ?",selectionArgs);
+
+        if(c.moveToFirst())
+        {
+            do {
+
+                Questions questions = new Questions();
+                questions.setQuestion(c.getString(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_QUESTION)));
+                questions.setOption1(c.getString(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_OPTION1)));
+                questions.setOption2(c.getString(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_OPTION2)));
+                questions.setOption3(c.getString(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_OPTION3)));
+                questions.setOption4(c.getString(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_OPTION4)));
+                questions.setAnsNr(c.getInt(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_ANS)));
+                questions.setDifficulty(c.getString(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_DIFFICULTY)));
+
+                questionsList.add(questions);
+
+            }while(c.moveToNext());
+        }
+
+        c.close();
+        return questionsList;
     }
 
     public List<Questions> getAllQuestions()
@@ -125,6 +168,7 @@ public class QuizDBHelper extends SQLiteOpenHelper {
                 questions.setOption3(c.getString(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_OPTION3)));
                 questions.setOption4(c.getString(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_OPTION4)));
                 questions.setAnsNr(c.getInt(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_ANS)));
+                questions.setDifficulty(c.getString(c.getColumnIndex(QuizContract.QuestionTable.COLUMN_DIFFICULTY)));
 
                 questionsList.add(questions);
 

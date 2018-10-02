@@ -1,17 +1,25 @@
 package com.example.shanay.quizapp2;
 
-public class Questions {
+public class Questions  {
+    public static  final String DIFFICULTY_EASY = "Easy";
+    public static  final String DIFFICULTY_MEDIUM = "Medium";
+    public static  final String DIFFICULTY_HARD = "Hard";
+
+   // private int id;
     private String question;
     private String option1;
     private String option2;
     private String option3;
     private String option4;
     private int ansNr;
+    private String difficulty;
+    //private int category_id;
 
     public Questions()
     {}
 
-    public Questions(String question, String option1, String option2, String option3, String option4, int ansNr)
+    public Questions(String question, String option1, String option2, String option3, String option4,
+                     int ansNr,String difficulty)
     {
         this.question = question;
         this.option1 = option1;
@@ -19,8 +27,18 @@ public class Questions {
         this.option3 = option3;
         this.option4 = option4;
         this.ansNr = ansNr;
+        this.difficulty = difficulty;
+        //this.category_id = category_id;
     }
 
+   /* public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+*/
     public String getQuestion() {
         return question;
     }
@@ -68,4 +86,31 @@ public class Questions {
     public void setAnsNr(int ansNr) {
         this.ansNr = ansNr;
     }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+   /* public int getCategory_id() {
+        return category_id;
+    }
+
+    public void setCategory_id(int category_id) {
+        this.category_id = category_id;
+    }*/
+
+    public static String[] getAllDifficultyLevels()
+    {
+        return new  String[]{
+                DIFFICULTY_EASY,
+                DIFFICULTY_MEDIUM,
+                DIFFICULTY_HARD
+    };
+
+    }
+
 }
