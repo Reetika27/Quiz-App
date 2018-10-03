@@ -35,6 +35,7 @@ public class QuizActivity extends AppCompatActivity {
     private TextView textViewQuestion;
     private  TextView textViewScore;
     private TextView textViewQuestionNumber;
+    private TextView textViewCategory;
     private  TextView textViewDifficulty;
     private TextView textViewCountDown;
     private RadioGroup rGroup;
@@ -70,6 +71,7 @@ public class QuizActivity extends AppCompatActivity {
 
         textViewQuestion = findViewById(R.id.text_question_statement);
         textViewQuestionNumber = findViewById(R.id.text_question);
+        textViewCategory = findViewById(R.id.text_category);
         textViewDifficulty = findViewById(R.id.text_difficulty);
         textViewScore = findViewById(R.id.text_score);
         textViewCountDown = findViewById(R.id.text_countdown);
@@ -84,11 +86,15 @@ public class QuizActivity extends AppCompatActivity {
         textColorDefaultCd = textViewCountDown.getTextColors();
 
         Intent intent = getIntent();
+        int categoryID = intent.getIntExtra(StartingScreenActivity.EXTRA_CATEGORY_ID,0);
+        String categoryName = intent.getStringExtra(StartingScreenActivity.EXTRA_CATEGORY_NAME);
         String difficulty = intent.getStringExtra(StartingScreenActivity.EXTRA_DIFFICULTY);
+
+        textViewCategory.setText("Category: " + categoryName);
         textViewDifficulty.setText("Difficulty: "+ difficulty);
 
-        this.quizDBHelper = new QuizDBHelper(this);
-        questionsList = quizDBHelper.getQuestions(difficulty);
+        this.quizDBHelper = QuizDBHelper.getInstance(this);
+        questionsList = quizDBHelper.getQuestions(categoryID,difficulty);
         questionTotal = questionsList.size();
         Collections.shuffle(questionsList);
         showNextQuestion();
