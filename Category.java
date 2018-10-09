@@ -30,4 +30,9 @@ public static final int CPP =4;
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
