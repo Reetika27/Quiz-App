@@ -1,4 +1,4 @@
-package com.example.shanay.quizapp2;
+package com.example.swarangigaurkar.learnersapp;
 
 public class Questions  {
     public static  final String DIFFICULTY_EASY = "Easy";
@@ -109,7 +109,7 @@ public class Questions  {
                 DIFFICULTY_EASY,
                 DIFFICULTY_MEDIUM,
                 DIFFICULTY_HARD
-    };
+        };
 
     }
 

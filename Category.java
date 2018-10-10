@@ -1,10 +1,10 @@
-package com.example.shanay.quizapp2;
+package com.example.swarangigaurkar.learnersapp;
 
 public class Category {
-public static final int C =1;
-public static final int JAVA =2;
-public static final int ANDROID =3;
-public static final int CPP =4;
+    public static final int C =1;
+    public static final int JAVA =2;
+    public static final int ANDROID =3;
+    public static final int CPP =4;
 
     private int id;
     private String name;
@@ -29,5 +29,10 @@ public static final int CPP =4;
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

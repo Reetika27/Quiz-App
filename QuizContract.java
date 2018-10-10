@@ -1,4 +1,4 @@
-package com.example.shanay.quizapp2;
+package com.example.swarangigaurkar.learnersapp;
 
 import android.provider.BaseColumns;
 
