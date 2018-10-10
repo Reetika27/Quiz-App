@@ -1,4 +1,4 @@
-package com.example.shanay.quizapp2;
+package com.example.shanay.newquiz1;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,13 +15,24 @@ import static android.provider.BaseColumns._ID;
 
 public class QuizDBHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME ="Quiz2.db";
-    private static final int DATABASE_VERSION =2;
+    private static final String DATABASE_NAME ="NewQuizDb.db";
+    private static final int DATABASE_VERSION =1;
+
+    private  static  QuizDBHelper instance;
 
     private SQLiteDatabase db;
 
-    public QuizDBHelper(Context context) {
+    private QuizDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static  synchronized QuizDBHelper getInstance(Context context)
+    {
+        if(instance==null)
+        {
+            instance = new QuizDBHelper(context.getApplicationContext());
+        }
+        return  instance;
     }
 
     @Override
@@ -92,13 +103,13 @@ public class QuizDBHelper extends SQLiteOpenHelper {
 
     public void fillQuestionsTable()
     {
-        Questions q1= new Questions("C, Easy:Which is not an access specifier" , "public","private","protected","main",4,
+        Questions q1= new Questions("Which is not an access specifier" , "public","private","protected","main",4,
                 Questions.DIFFICULTY_EASY,Category.C);
         addQuestion(q1);
-        Questions q2= new Questions("CPP, Easy: Inline functions are useful when" , "Function is large with many nested loops","Function has many static variables","Function is small and we want to avoid function call overhead","None of the above",3,
+        Questions q2= new Questions("Inline functions are useful when" , "Function is large with many nested loops","Function has many static variables","Function is small and we want to avoid function call overhead","None of the above",3,
                 Questions.DIFFICULTY_EASY,Category.CPP);
         addQuestion(q2);
-        Questions q3= new Questions("JAVA, Medium: Which of the following is true?" , "All objects of a class share all data members of class","Objects of a class do not share non-static members. Every object has its own copy.","Objects of a class do not share codes of non-static methods, they have their own copy","None Of the above",2,
+        Questions q3= new Questions("Which of the following is true?" , "All objects of a class share all data members of class","Objects of a class do not share non-static members. Every object has its own copy.","Objects of a class do not share codes of non-static methods, they have their own copy","None Of the above",2,
                 Questions.DIFFICULTY_MEDIUM,Category.JAVA);
         addQuestion(q3);
         Questions q4= new Questions("ANDROID, Hard: #include<iostream>\n" +
@@ -152,15 +163,35 @@ public class QuizDBHelper extends SQLiteOpenHelper {
         db.insert(QuizContract.QuestionTable.TABLE_NAME,null,values);
 
     }
+    public List<Category> getAllCategories()
+    {
+        List<Category> categoryList = new ArrayList<Category>();
+        db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + QuizContract.CategoriesTable.TABLE_NAME ,null);
+        if(cursor.moveToFirst())
+        {
+            do {
+                Category category = new Category();
+                category.setId(cursor.getInt(cursor.getColumnIndex(QuizContract.CategoriesTable._ID)));
+                category.setName(cursor.getString(cursor.getColumnIndex(QuizContract.CategoriesTable.NAME)));
+                categoryList.add(category);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return  categoryList;
+    }
 
-       public List<Questions> getQuestions(String difficulty )
+    public List<Questions> getQuestions(int categoryID,String difficulty )
     {
         List<Questions> questionsList =new ArrayList<Questions>();
-        String[] selectionArgs = new String[] {difficulty};
-
         db =getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM "+ QuizContract.QuestionTable.TABLE_NAME +
-                " WHERE "+ QuizContract.QuestionTable.COLUMN_DIFFICULTY + " = ?",selectionArgs);
+        String selection = QuizContract.QuestionTable.COLUMN_CATEGORY_ID + " = ? " +
+                " AND " + QuizContract.QuestionTable.COLUMN_DIFFICULTY + " = ? ";
+        String[] selectionArgs = new String[]{String.valueOf(categoryID),difficulty};
+
+
+        Cursor c = db.query(QuizContract.QuestionTable.TABLE_NAME,null,selection,selectionArgs,null,null,
+                null);
 
         if(c.moveToFirst())
         {

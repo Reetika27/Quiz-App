@@ -1,4 +1,4 @@
-package com.example.shanay.quizapp2;
+package com.example.shanay.newquiz1;
 
 import android.provider.BaseColumns;
 

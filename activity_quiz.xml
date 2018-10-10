@@ -1,77 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".QuizActivity">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".QuizActivity">
 
-<TextView
-    android:id="@+id/text_score"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="score:0"
-    android:textSize="20dp"
-    android:textColor="@android:color/black"
-    android:layout_marginTop="16dp"/>
-
-<TextView
-    android:id="@+id/text_question"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Question: 1/x"
-    android:layout_below="@id/text_score"
-    android:textColor="@android:color/black"
-    android:textSize="20dp"
-    android:layout_marginTop="1dp"/>
+  <android.support.constraint.ConstraintLayout
+      android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/text_difficulty"
+        android:id="@+id/text_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Difficulty: "
-        android:layout_below="@id/text_countdown"
-        android:textColor="@android:color/black"
-        android:textSize="20dp"
-        android:layout_marginTop="20dp"/>
-
-
-
-<TextView
-    android:id="@+id/text_countdown"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@android:color/black"
-    android:textSize="40sp"
-    android:text="00:30"
-    android:layout_alignParentEnd="true"
-    android:layout_marginRight="10dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Question: 1/x"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="10dp"/>
 
     <TextView
-        android:id="@+id/text_question_statement"
-        android:layout_width="match_parent"
+        android:id="@+id/text_countdown"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="120dp"
-        android:text="This question//This question//This question//This question//This question//This question//This question//This question//This question//"
-        android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:textSize="40sp"
+        android:text="00:30"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="5dp"/>
+
+      <android.support.v7.widget.CardView
+          android:id="@+id/QuestionCardViewView"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginHorizontal="10dp"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          android:layout_marginTop="40dp"
+          android:padding="10dp"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toBottomOf="@id/text_countdown">
+
+          <TextView
+              android:id="@+id/text_question_statement"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Question//Question//Question//Question//Question//Question//" />
+
+      </android.support.v7.widget.CardView>
 
     <RadioGroup
         android:id="@+id/radio_group"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="172dp">
-
+        app:layout_constraintTop_toBottomOf = "@id/QuestionCardViewView"
+        android:layout_marginTop="20dp">
 
         <RadioButton
             android:id="@+id/radio_btn1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Option1"
             android:textColor="@android:color/black"
@@ -79,7 +72,7 @@ tools:context=".QuizActivity">
 
         <RadioButton
             android:id="@+id/radio_btn2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Option2"
             android:textColor="@android:color/black"
@@ -87,7 +80,7 @@ tools:context=".QuizActivity">
 
         <RadioButton
             android:id="@+id/radio_btn3"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Option3"
             android:textColor="@android:color/black"
@@ -95,7 +88,7 @@ tools:context=".QuizActivity">
 
         <RadioButton
             android:id="@+id/radio_btn4"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Option4"
             android:textColor="@android:color/black"
@@ -108,10 +101,13 @@ tools:context=".QuizActivity">
         android:id="@+id/btn_submit_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="74dp"
+        app:layout_constraintTop_toBottomOf="@id/radio_group"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:text="Submit"
         android:textColor="@android:color/black" />
 
-</RelativeLayout>
+  </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

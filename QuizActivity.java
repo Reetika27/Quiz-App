@@ -1,4 +1,4 @@
-package com.example.shanay.quizapp2;
+package com.example.shanay.newquiz1;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -33,9 +33,10 @@ public class QuizActivity extends AppCompatActivity {
     private static final String KEY_QUESTION_LIST ="keyQuestionsList";
 
     private TextView textViewQuestion;
-    private  TextView textViewScore;
+   // private  TextView textViewScore;
     private TextView textViewQuestionNumber;
-    private  TextView textViewDifficulty;
+   /* private TextView textViewCategory;
+    private  TextView textViewDifficulty;*/
     private TextView textViewCountDown;
     private RadioGroup rGroup;
     private RadioButton rb1;
@@ -70,8 +71,9 @@ public class QuizActivity extends AppCompatActivity {
 
         textViewQuestion = findViewById(R.id.text_question_statement);
         textViewQuestionNumber = findViewById(R.id.text_question);
+        /*textViewCategory = findViewById(R.id.text_category);
         textViewDifficulty = findViewById(R.id.text_difficulty);
-        textViewScore = findViewById(R.id.text_score);
+        textViewScore = findViewById(R.id.text_score);*/
         textViewCountDown = findViewById(R.id.text_countdown);
         rGroup = findViewById(R.id.radio_group);
         rb1 = findViewById(R.id.radio_btn1);
@@ -84,11 +86,15 @@ public class QuizActivity extends AppCompatActivity {
         textColorDefaultCd = textViewCountDown.getTextColors();
 
         Intent intent = getIntent();
+        int categoryID = intent.getIntExtra(StartingScreenActivity.EXTRA_CATEGORY_ID,0);
+        String categoryName = intent.getStringExtra(StartingScreenActivity.EXTRA_CATEGORY_NAME);
         String difficulty = intent.getStringExtra(StartingScreenActivity.EXTRA_DIFFICULTY);
-        textViewDifficulty.setText("Difficulty: "+ difficulty);
 
-        this.quizDBHelper = new QuizDBHelper(this);
-        questionsList = quizDBHelper.getQuestions(difficulty);
+       /* textViewCategory.setText("Category: " + categoryName);
+        textViewDifficulty.setText("Difficulty: "+ difficulty);*/
+
+        this.quizDBHelper = QuizDBHelper.getInstance(this);
+        questionsList = quizDBHelper.getQuestions(categoryID,difficulty);
         questionTotal = questionsList.size();
         Collections.shuffle(questionsList);
         showNextQuestion();
@@ -152,7 +158,7 @@ public class QuizActivity extends AppCompatActivity {
 
             timeLeft = COUNTDOWN_IN_MILLIS;
             startCountDown();
-                            }
+        }
         else {
             finishQuiz();
         }
@@ -169,49 +175,49 @@ public class QuizActivity extends AppCompatActivity {
         if(ansNo == currentQuestion.getAnsNr())
         {
             score++;
-            textViewScore.setText("Score: " + score);
+            //textViewScore.setText("Score: " + score);
         }
 
         showSolution();
 
     }
 
-private void startCountDown()
-{
-    countDownTimer =  new CountDownTimer(timeLeft,1000) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-
-            timeLeft = millisUntilFinished;
-            updateCountDownText();
-        }
-
-        @Override
-        public void onFinish() {
-            timeLeft =0;
-            updateCountDownText();
-            checkAnswer();
-        }
-    }.start();
-}
-
-private void updateCountDownText()
-{
-    int mins =(int)(timeLeft/1000)/60;
-    int secs = (int) (timeLeft/1000)%60;
-
-    String timeFormatted = String.format(Locale.getDefault(),"%02d:%02d",mins,secs);
-
-    textViewCountDown.setText(timeFormatted);
-    if(timeLeft < 10000)
+    private void startCountDown()
     {
-        textViewCountDown.setTextColor(Color.RED);
+        countDownTimer =  new CountDownTimer(timeLeft,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                timeLeft = millisUntilFinished;
+                updateCountDownText();
+            }
+
+            @Override
+            public void onFinish() {
+                timeLeft =0;
+                updateCountDownText();
+                checkAnswer();
+            }
+        }.start();
     }
-    else
+
+    private void updateCountDownText()
     {
-        textViewCountDown.setTextColor(textColorDefaultCd);
+        int mins =(int)(timeLeft/1000)/60;
+        int secs = (int) (timeLeft/1000)%60;
+
+        String timeFormatted = String.format(Locale.getDefault(),"%02d:%02d",mins,secs);
+
+        textViewCountDown.setText(timeFormatted);
+        if(timeLeft < 10000)
+        {
+            textViewCountDown.setTextColor(Color.RED);
+        }
+        else
+        {
+            textViewCountDown.setTextColor(textColorDefaultCd);
+        }
     }
-}
 
 
     private void showSolution()
@@ -248,7 +254,7 @@ private void updateCountDownText()
             buttonSubmitNext.setText("Finish");
         }
 
-}
+    }
     private void finishQuiz()
     {
         Intent resultIntent = new Intent();
